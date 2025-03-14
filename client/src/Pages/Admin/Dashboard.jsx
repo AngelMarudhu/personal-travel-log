@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../Redux/AuthSlice";
 import AdminSearchUsers from "./AdminSearchUsers";
 import { setSearchUserName } from "../../Redux/Admin/AdminSlice";
+import { IoMdNotifications } from "react-icons/io";
 
 const ManageUser = lazy(() => import("./ManageUser"));
 
@@ -70,6 +71,12 @@ const Dashboard = () => {
               />
             </div>
           )}
+        </div>
+        <div className="flex items-center border-2 p-2 rounded-lg">
+          Spam User
+          <span>
+            <IoMdNotifications className="text-red-500 text-2xl" />
+          </span>
         </div>
 
         <button className="cursor-pointer" onClick={handleClick}>

@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./CustomHooks/ProtectedRoute";
+import SavedLogs from "./Components/TravelerUserLogComponents/SavedLogs";
+// import SavedLogs from "./Components/TravelerUserLogComponents/SavedLogs";
 
 const Home = lazy(() => import("./Pages/Traveler/Home"));
 const LoginPage = lazy(() => import("./Pages/LoginPage"));
@@ -9,6 +11,9 @@ const RegisterPage = lazy(() => import("./Pages/RegisterPage"));
 const UserLog = lazy(() => import("./Pages/Traveler/UserLog"));
 const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
 const SearchResult = lazy(() => import("./Components/SearchResults"));
+// const SavedLogs = lazy(() =>
+//   import("./Components/TravelerUserLogComponents/SavedLogs")
+// );
 
 // console.log(navigator.geolocation.getCurrentPosition((e) => console.log(e)));
 
@@ -73,6 +78,16 @@ function App() {
               <ProtectedRoute authRequired={true} role="traveler">
                 <Suspense fallback={<div>Loading...</div>}>
                   <SearchResult />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saved-logs"
+            element={
+              <ProtectedRoute authRequired={true} role="traveler">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SavedLogs />
                 </Suspense>
               </ProtectedRoute>
             }

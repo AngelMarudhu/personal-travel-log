@@ -1,15 +1,19 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { showEditLog, setUpdateLog } from "../Redux/UserLogSlice";
 import ConfirmDelete from "./ConfirmDelete";
 import { removeLocalYourLogs } from "../Redux/UserLogSlice";
 import { deleteTravelLog, getUserTravelLogs } from "../Features/UserLogFeature";
+import { postSavedLog } from "../Features/SavedLogFeature";
+import { ToastContainer, toast } from "react-toastify";
 
-const FeedMenu = ({ userMenu, logs, closeMenu }) => {
+const FeedMenu = ({ userMenu, logs, closeMenu, feedLogForSave }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const dispatch = useDispatch();
 
-  // console.log(logs);
+  const { isLoading, isSaved, error } = useSelector((state) => state.savedLog);
+
+  // console.log(error);
 
   const handleEditLog = () => {
     dispatch(showEditLog());
@@ -28,9 +32,15 @@ const FeedMenu = ({ userMenu, logs, closeMenu }) => {
     closeMenu();
   };
 
+  const handlePostSavedLog = () => {
+    // console.log(feedLogForSave);
+    dispatch(postSavedLog(feedLogForSave._id));
+  };
+
   // console.log(userMenu);
   return (
     <div>
+      <ToastContainer />
       <div className="absolute top-0 right-10 bg-white shadow-lg rounded-lg p-4 z-50">
         <ul className="space-y-5">
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
@@ -44,7 +54,9 @@ const FeedMenu = ({ userMenu, logs, closeMenu }) => {
             {userMenu ? (
               <button onClick={handleDelete}>Delete</button>
             ) : (
-              <button> Save</button>
+              <button onClick={handlePostSavedLog}>
+                {isLoading ? "Saving..." : "Save"}
+              </button>
             )}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">

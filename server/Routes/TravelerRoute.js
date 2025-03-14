@@ -17,6 +17,11 @@ import {
   findNearbyLocation,
   searchByLocation,
 } from "../Controllers/TravelLog/SearchTraveler.js";
+import {
+  deleteSavedLog,
+  getSavedLog,
+  postSavedLog,
+} from "../Controllers/TravelLog/SavedLog.js";
 
 export const travelerRouter = express.Router();
 
@@ -45,3 +50,11 @@ travelerRouter.post("/user-verify-otp", verifyOtp);
 travelerRouter.put("/change-user-password", changePassword);
 
 travelerRouter.put("/change-user-email", changeEmail);
+
+//  saved log traveler routes
+
+travelerRouter.post("/post-saved-log", postSavedLog);
+
+travelerRouter.get("/get-saved-log", getSavedLog);
+
+travelerRouter.delete("/delete-saved-log/:id", deleteSavedLog);

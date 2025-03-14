@@ -4,7 +4,7 @@ export const searchByLocation = async (req, res) => {
   try {
     ///// its an from and to location searching
     const { fromLocation, toLocation } = req.query;
-    // console.log(fromLocation, toLocation);
+    console.log(fromLocation, toLocation);
 
     // let filterLocation = {};
 
@@ -19,7 +19,7 @@ export const searchByLocation = async (req, res) => {
 
     const searchLogs = await travelLogSchema.find({
       fromLocation: fromLocation,
-      location: toLocation,
+      toLocation: toLocation,
     });
     // console.log(searchLogs);
 
@@ -38,9 +38,9 @@ export const findNearbyLocation = async (req, res) => {
     // const currentLocation = req.body;
     const currentLocation = req.query;
 
-    // console.log(parseFloat(currentLocation.lat));
+    console.log(currentLocation);
 
-    const maxDistance = 50000; //// 100 km 1000 = 1km
+    const maxDistance = 500000; //// 100 km 1000 = 1km
 
     let nearByLocation = await travelLogSchema.find({
       location: {

@@ -13,7 +13,7 @@ import { toast, ToastContainer } from "react-toastify";
 import SearchLog from "./SearchLog";
 import { FaUser, FaEdit } from "react-icons/fa";
 import { showEditOptionPanel } from "../../Redux/Traveler/userInfoSlice";
-import { resetPreviousSession } from "../../Redux/UserLogSlice";
+// import { resetPreviousSession } from "../../Redux/UserLogSlice";
 
 const UpdateLog = lazy(() => import("../../Components/UpdateLog"));
 const UserLogUpdateInformation = lazy(() =>
@@ -67,6 +67,9 @@ const UserLog = () => {
             <h2>Role: {user.role}</h2>
             <h2>IsAlive: {user.isBlocked ? "Dead" : "Alive"}</h2>
           </aside>
+          <div className="flex justify-between mt-4 border-2 border-gray-400 rounded-lg p-2">
+            <a href="/saved-logs">Your Saved Logs</a>
+          </div>
         </div>
 
         {/* logs */}

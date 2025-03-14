@@ -11,6 +11,7 @@ import FeedMenu from "./FeedMenu";
 import useDebouncing from "../CustomHooks/useDebouncing";
 import _ from "lodash";
 import useSocket from "../Utils/Socket";
+import { ToastContainer, toast } from "react-toastify";
 
 // import Comment from "./Comment";
 
@@ -27,6 +28,29 @@ const Feed = ({ userId }) => {
   const { travelLogs, currentPage, totalPages, isLoading } = useSelector(
     (state) => state.travelLog
   );
+
+  const { isSaved, error } = useSelector((state) => state.savedLog);
+
+  // console.log(error);
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Already saved", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
+    }
+    if (isSaved) {
+      toast.success("Saved Successfully", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
+    }
+  }, [error, isSaved]);
 
   const { likeTravelLog } = useSocket();
   const handleLoadMore = () => {
@@ -68,6 +92,7 @@ const Feed = ({ userId }) => {
 
   return (
     <div className="w-full p-6 ">
+      <ToastContainer />
       {travelLogs?.length === 0 && (
         <div>
           <h1 className="text-center">Sorry We Aren't Ready</h1>
@@ -88,7 +113,7 @@ const Feed = ({ userId }) => {
                     <h2 className="text-lg font-semibold text-gray-800 capitalize">
                       {log.title}
                     </h2>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-col gap-2 items-start space-x-2 mt-3">
                       <h2>From: {log.fromLocation}</h2>
                       <h2>To: {log.toLocation}📍</h2>
                     </div>
@@ -166,7 +191,7 @@ const Feed = ({ userId }) => {
                   </time> */}
                 <span className="text-sm">Cost: {log.cost} ₹</span>
               </footer>
-              {feedMenu === log._id && <FeedMenu />}
+              {feedMenu === log._id && <FeedMenu feedLogForSave={log} />}
               {commentPreview === log._id && (
                 <Suspense fallback={<div>Loading...</div>}>
                   <Comment

@@ -10,6 +10,7 @@ const initialState = {
   isLoading: false,
   error: null,
   nearBySearch: {
+    coordinates: null,
     isNearBySearchEnable: false,
   },
   yourSearchLocation:
@@ -71,6 +72,11 @@ const searchLogSlice = createSlice({
       });
     },
 
+    setCoordinates: (state, action) => {
+      // console.log(action.payload);
+      state.nearBySearch.coordinates = action.payload;
+    },
+
     clearSearchLogs: (state) => {
       state.filteredSearchLogs = [];
     },
@@ -98,9 +104,10 @@ const searchLogSlice = createSlice({
     });
 
     builder.addCase(getNearByPlaces.fulfilled, (state, action) => {
+      // console.log(action.payload.nearByLocation);
       state.isLoading = false;
       state.nearBySearch.isNearBySearchEnable = true;
-      state.searchLogLocation = action.payload;
+      state.searchLogLocation = action.payload.nearByLocation;
     });
 
     builder.addCase(getNearByPlaces.rejected, (state, action) => {
@@ -116,6 +123,7 @@ export const {
   searchByBuget,
   clearSearchLogs,
   sortMostLikes,
+  setCoordinates,
 } = searchLogSlice.actions;
 
 export default searchLogSlice.reducer;

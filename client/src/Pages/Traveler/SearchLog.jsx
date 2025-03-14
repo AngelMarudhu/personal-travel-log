@@ -1,24 +1,16 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { yourSearchLocationQuery } from "../../Redux/SearchLogSlice";
 import { filterUserLog } from "../../Redux/UserLogSlice";
-import { getNearByPlaces } from "../../Features/TravelLogFeature";
+import { setCoordinates } from "../../Redux/SearchLogSlice";
 
-const SearchLog = ({ userLog }) => {
+const SearchLog = ({ userLog, mobileMenu }) => {
   const [searchLocation, setSearchLocation] = useState({
     fromLocation: "",
     toLocation: "",
   });
-  const [coordinates, setCoordinates] = useState({
-    lat: null,
-    lng: null,
-  });
-
-  const { nearBySearch, searchLogLocation } = useSelector(
-    (state) => state.searchLogByLocation
-  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,12 +65,8 @@ const SearchLog = ({ userLog }) => {
         (position) => {
           const { latitude, longitude } = position.coords;
           // console.log({ latitude, longitude });
-          setCoordinates({ lat: latitude, lng: longitude });
-          if (coordinates.lat && coordinates.lng) {
-            dispatch(
-              getNearByPlaces({ lat: coordinates.lat, lng: coordinates.lng })
-            );
-          }
+          dispatch(setCoordinates({ latitude, longitude }));
+          navigate("/search-results");
         },
         (error) => {
           alert("Failed to get your location please allow location access");
@@ -116,6 +104,7 @@ const SearchLog = ({ userLog }) => {
           >
             Search
           </button>
+
           <button
             className="cursor-pointer text-cyan-900"
             onClick={(e) => handleNearby(e)}

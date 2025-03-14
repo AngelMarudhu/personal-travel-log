@@ -2,16 +2,24 @@ import React, { useState } from "react";
 import { createTraveLog } from "../Features/TravelLogFeature";
 import { useDispatch, useSelector } from "react-redux";
 import useImageUpload from "../CustomHooks/useImageUpload";
+import { debounce } from "lodash";
 
 const CreateLog = () => {
   const [place, setPlace] = useState({
     newPlace: "",
   });
+  const [autoCompleteLocation, setAutoCompleteLocation] = useState([]);
+  const [handleField, setHandleField] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState({
+    fromLat: "",
+    fromLng: "",
+    toLat: "",
+    toLng: "",
+  });
+  const [distance, setDistance] = useState(null);
   const dispatch = useDispatch();
 
   const { isLoading } = useSelector((state) => state.travelLog);
-
-  // console.log(travelLogs, isLoading);
 
   const [log, setLog] = useState({
     title: "",
@@ -30,8 +38,41 @@ const CreateLog = () => {
   const { error, handleImageChange, isUploading, uploadImages, uploadedUrls } =
     useImageUpload();
 
+  const fetchAutoCompleteLocations = async (query) => {
+    const LOCATION_API_KEY = "pk.dca6843e12f720c179835eaa8f74ab3e"; //// LOCATIONIQ API KEY
+    if (!query) return;
+    try {
+      if (query.length < 3) return;
+      const response = await fetch(
+        `https://us1.locationiq.com/v1/autocomplete.php?key=${LOCATION_API_KEY}&q=${query}&limit=3&format=json`
+      );
+      const data = await response.json();
+      setAutoCompleteLocation(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const debouncedSearch = debounce(fetchAutoCompleteLocations, 1000);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "fromLocation") {
+      if (value.length > 3) {
+        debouncedSearch(value);
+      } else {
+        setAutoCompleteLocation([]);
+      }
+    }
+
+    if (name === "toLocation") {
+      if (value.length > 3) {
+        debouncedSearch(value);
+      } else {
+        setAutoCompleteLocation([]);
+      }
+    }
+
     setLog((prev) => {
       return {
         ...prev,
@@ -107,6 +148,55 @@ const CreateLog = () => {
     }
   };
 
+  const handleSelectSuggestion = (suggestion) => {
+    setLog((prev) => {
+      return {
+        ...prev,
+        [handleField]: suggestion.display_name,
+      };
+    });
+
+    if (handleField === "fromLocation") {
+      setSelectedLocation((prev) => {
+        return {
+          ...prev,
+          fromLat: parseFloat(suggestion.lat),
+          fromLng: parseFloat(suggestion.lon),
+        };
+      });
+    } else {
+      setSelectedLocation((prev) => {
+        return {
+          ...prev,
+          toLat: parseFloat(suggestion.lat),
+          toLng: parseFloat(suggestion.lon),
+        };
+      });
+    }
+
+    setAutoCompleteLocation([]);
+  };
+
+  const getDistanceOfLocation = () => {
+    const { fromLat, fromLng, toLat, toLng } = selectedLocation;
+
+    if (fromLat && fromLng && toLat && toLng) {
+      const latDiff = toLat - fromLat;
+      const lngDiff = toLng - fromLng;
+
+      const kmPerDegreeLat = 111; // Approx distance per degree of latitude in km
+      const kmPerDegreeLng = 111 * Math.cos(fromLat * (Math.PI / 180)); // Adjust for longitude
+
+      const xDiffKm = latDiff * kmPerDegreeLat;
+      const yDiffKm = lngDiff * kmPerDegreeLng;
+
+      const distance = Math.sqrt(xDiffKm * xDiffKm + yDiffKm * yDiffKm);
+      setDistance(distance.toFixed(2));
+    } else {
+      alert("Please select both locations with valid coordinates");
+    }
+  };
+
   return (
     <div>
       <h1 className="text-center w-full mb-2 border-b-2">
@@ -137,21 +227,51 @@ const CreateLog = () => {
             className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
+            onFocus={() => {
+              setHandleField("fromLocation");
+            }}
             value={log.fromLocation}
             required
             name="fromLocation"
             placeholder="From Location"
           />
 
+          {autoCompleteLocation.length > 0 && (
+            <ul>
+              {autoCompleteLocation.map((location, index) => {
+                return (
+                  <li
+                    onClick={(e) => handleSelectSuggestion(location)}
+                    className="p-2 hover:bg-gray-200 cursor-pointer rounded-lg"
+                    key={index}
+                  >
+                    {location.display_name}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
           <input
             className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
             value={log.toLocation}
+            onFocus={() => {
+              setHandleField("toLocation");
+            }}
             required
             name="toLocation"
             placeholder="To Location"
           />
+
+          <button className="text-cyan-600" onClick={getDistanceOfLocation}>
+            Get Distance:{" "}
+            <span className="text-black">
+              {distance ? `${distance}` : "Enter Location"}
+            </span>
+          </button>
+
           <input
             className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="number"

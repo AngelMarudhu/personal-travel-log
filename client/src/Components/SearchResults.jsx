@@ -1,5 +1,5 @@
 import React, { lazy, useEffect, useState, Suspense } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { searchLogByLocation } from "../Features/TravelLogFeature";
 import useDebouncing from "../CustomHooks/useDebouncing";
@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import FeedMenu from "./FeedMenu";
+import { getNearByPlaces } from "../Features/TravelLogFeature";
 // import { useLocation } from "react-router";
 
 const SearchFilters = lazy(() => import("./SearchFilters/SearchFilters"));
@@ -26,18 +27,27 @@ const SearchResult = () => {
   const [feedMenu, setFeedMenu] = useState(null);
   const debounce = useDebouncing(searchLogByLocation);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // console.log(nearBySearch);
 
   const logToDisplay =
     filteredSearchLogs.length > 0 ? filteredSearchLogs : searchLogLocation;
 
   useEffect(() => {
-    if (yourSearchLocation !== "") {
+    if (yourSearchLocation !== null && !nearBySearch.coordinates) {
       debounce({
         fromLocation: yourSearchLocation.fromLocation,
         toLocation: yourSearchLocation.toLocation,
       });
     }
   }, [yourSearchLocation, navigate]);
+
+  useEffect(() => {
+    if (nearBySearch.coordinates) {
+      dispatch(getNearByPlaces(nearBySearch.coordinates));
+    }
+  }, []);
 
   const handleMenuPopUp = (id) => {
     setFeedMenu(feedMenu === id ? null : id);
@@ -54,10 +64,10 @@ const SearchResult = () => {
       <div className="pl-5 pr-5">
         {isLoading ? "Loading..." : null}
         <h1 className="capitalize">{`Your location result ${
-          yourSearchLocation.toLocation
+          yourSearchLocation?.toLocation || "Location"
         } ${
-          searchLogLocation.length > 0
-            ? `Found ${searchLogLocation.length}`
+          searchLogLocation?.length > 0
+            ? `Found ${searchLogLocation?.length}`
             : error
             ? error
             : "No Logs Found"
@@ -76,7 +86,7 @@ const SearchResult = () => {
                   <h2 className="text-lg font-semibold text-gray-800 capitalize">
                     {log.title}
                   </h2>
-                  <h2>Destination: {log.location}</h2>
+                  <h2>Destination: {log.toLocation}</h2>
                 </div>
               </div>
               <button

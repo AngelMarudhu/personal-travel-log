@@ -121,9 +121,9 @@ export const getNearByPlaces = createAsyncThunk(
   async (coordination, thunkAPI) => {
     try {
       const response = await api.get(
-        `/get-nearby-location?lat=${coordination.lat}&lng=${coordination.lng}`
+        `/get-nearby-location?lat=${coordination.latitude}&lng=${coordination.longitude}`
       );
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue({
