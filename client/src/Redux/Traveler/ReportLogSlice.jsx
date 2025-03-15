@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+// import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  reports: [],
-  isReported: false,
-  isReportLoading: false,
-  error: null,
-};
+// const initialState = {
+//   reports: [],
+//   isReported: false,
+//   isReportLoading: false,
+//   error: null,
+// };
 
-const reportSlice = createSlice({});
+// const reportSlice = createSlice({});

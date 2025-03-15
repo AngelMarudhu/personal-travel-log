@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { initLikeSchema } from "./LikeSocket.js";
 import { initCommentSocket } from "./commentSocket.js";
+import { initReportSpamSocket } from "./reportSpamSocket.js";
 
 let io;
 
@@ -14,4 +15,5 @@ export const initSocket = (server) => {
 
   initLikeSchema(io);
   initCommentSocket(io);
+  initReportSpamSocket(io);
 };

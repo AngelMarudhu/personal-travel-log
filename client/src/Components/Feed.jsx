@@ -9,13 +9,15 @@ import { Pagination, Navigation } from "swiper/modules";
 import { CiMenuKebab } from "react-icons/ci";
 import FeedMenu from "./FeedMenu";
 import useDebouncing from "../CustomHooks/useDebouncing";
-import _ from "lodash";
+import _, { last } from "lodash";
 import useSocket from "../Utils/Socket";
 import { ToastContainer, toast } from "react-toastify";
+// import ReportForm from "./TravelerUserLogComponents/ReportForm";
 
 // import Comment from "./Comment";
 
 const Comment = lazy(() => import("./Comment"));
+const ReportForm = lazy(() => import("./TravelerUserLogComponents/ReportForm"));
 
 const Feed = ({ userId }) => {
   const [feedMenu, setFeedMenu] = useState(null);
@@ -24,6 +26,7 @@ const Feed = ({ userId }) => {
   const [commentPreview, setCommentPreview] = useState(null);
   const debounce = useDebouncing(getTravelLogs);
   const dispatch = useDispatch();
+  const [toggleReportForm, setToggleReportForm] = useState(null);
 
   const { travelLogs, currentPage, totalPages, isLoading } = useSelector(
     (state) => state.travelLog
@@ -32,6 +35,7 @@ const Feed = ({ userId }) => {
   const { isSaved, error } = useSelector((state) => state.savedLog);
 
   // console.log(error);
+  const { likeTravelLog } = useSocket();
 
   useEffect(() => {
     if (error) {
@@ -52,7 +56,6 @@ const Feed = ({ userId }) => {
     }
   }, [error, isSaved]);
 
-  const { likeTravelLog } = useSocket();
   const handleLoadMore = () => {
     if (currentPage <= totalPages) {
       debounce({ page: currentPage + 1 });
@@ -191,12 +194,28 @@ const Feed = ({ userId }) => {
                   </time> */}
                 <span className="text-sm">Cost: {log.cost} ₹</span>
               </footer>
-              {feedMenu === log._id && <FeedMenu feedLogForSave={log} />}
+              {feedMenu === log._id && (
+                <FeedMenu
+                  feedLogForSave={log}
+                  toggleReportForm={setToggleReportForm}
+                />
+              )}
+
               {commentPreview === log._id && (
                 <Suspense fallback={<div>Loading...</div>}>
                   <Comment
                     log={log}
                     onClosePreview={setCommentPreview}
+                    userId={userId}
+                  />
+                </Suspense>
+              )}
+
+              {toggleReportForm === log._id && (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ReportForm
+                    log={log}
+                    toggleReportForm={setToggleReportForm}
                     userId={userId}
                   />
                 </Suspense>

@@ -3,7 +3,7 @@ import travelLogSchema from "../Models/travelLogSchema.js";
 
 export const initLikeSchema = (io) => {
   io.on("connection", (socket) => {
-    console.log("user connected", socket.id);
+    console.log("Like user connected", socket.id);
 
     socket.on("likes", async (data) => {
       const { logId, userId } = data;
@@ -12,7 +12,7 @@ export const initLikeSchema = (io) => {
       const log = await travelLogSchema.findById(logId);
 
       if (!log) {
-        return socket.emit("error", "log not found0");
+        return socket.emit("error", "log not found");
       }
       /// check if user has already liked the log
 

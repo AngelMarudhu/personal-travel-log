@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { showEditLog, setUpdateLog } from "../Redux/UserLogSlice";
 import ConfirmDelete from "./ConfirmDelete";
 import { removeLocalYourLogs } from "../Redux/UserLogSlice";
-import { deleteTravelLog, getUserTravelLogs } from "../Features/UserLogFeature";
+import { deleteTravelLog } from "../Features/UserLogFeature";
 import { postSavedLog } from "../Features/SavedLogFeature";
-import { ToastContainer, toast } from "react-toastify";
 
-const FeedMenu = ({ userMenu, logs, closeMenu, feedLogForSave }) => {
+const FeedMenu = ({
+  userMenu,
+  logs,
+  closeMenu,
+  feedLogForSave,
+  toggleReportForm,
+}) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const dispatch = useDispatch();
 
   const { isLoading, isSaved, error } = useSelector((state) => state.savedLog);
 
-  // console.log(error);
+  // console.log(feedLogForSave);
 
   const handleEditLog = () => {
     dispatch(showEditLog());
@@ -37,10 +42,13 @@ const FeedMenu = ({ userMenu, logs, closeMenu, feedLogForSave }) => {
     dispatch(postSavedLog(feedLogForSave._id));
   };
 
+  const handleToggleReport = () => {
+    toggleReportForm(feedLogForSave._id);
+  };
+
   // console.log(userMenu);
   return (
     <div>
-      <ToastContainer />
       <div className="absolute top-0 right-10 bg-white shadow-lg rounded-lg p-4 z-50">
         <ul className="space-y-5">
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
@@ -60,14 +68,14 @@ const FeedMenu = ({ userMenu, logs, closeMenu, feedLogForSave }) => {
             )}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
-            {userMenu ? (
-              <button>Share</button>
-            ) : (
-              <button> Not Interested</button>
-            )}
+            {userMenu ? <button>Share</button> : <></>}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
-            {userMenu ? "" : <button>Report</button>}
+            {userMenu ? (
+              ""
+            ) : (
+              <button onClick={handleToggleReport}>Report</button>
+            )}
           </li>
         </ul>
       </div>

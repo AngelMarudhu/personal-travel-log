@@ -4,6 +4,7 @@ import { logOut } from "../../Redux/AuthSlice";
 import AdminSearchUsers from "./AdminSearchUsers";
 import { setSearchUserName } from "../../Redux/Admin/AdminSlice";
 import { IoMdNotifications } from "react-icons/io";
+import useSocket from "../../Utils/Socket";
 
 const ManageUser = lazy(() => import("./ManageUser"));
 
@@ -13,6 +14,10 @@ const Dashboard = () => {
   const [focus, setFocus] = useState(false);
   const [selectedUserFromSearch, setSelectedUserFromSearch] = useState(null);
   const dispatch = useDispatch();
+
+  const { notification } = useSocket();
+
+  console.log(notification);
 
   // console.log(selectedUserFromSearch);
 
