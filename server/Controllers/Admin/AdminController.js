@@ -1,5 +1,6 @@
 import travelLogSchema from "../../Models/travelLogSchema.js";
 import userSchema from "../../Models/UserSchema.js";
+import notificationSchema from "../../Models/notficationSchema.js";
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -128,6 +129,49 @@ export const unBlockeUser = async (req, res) => {
     res.status(200).json({
       message: "user unblocked successfully",
       success: true,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getNotificationAdmin = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+    // console.log(adminId, "adminId");
+
+    const notifications = await notificationSchema.find({
+      isRead: false,
+    });
+
+    if (notifications.length === 0) {
+      return res.status(200).json({
+        message: "no notifications found",
+      });
+    }
+
+    // console.log(notifications);
+
+    res.status(200).json({
+      message: "notifications fetched successfully",
+      notifications,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const markNotificationAsRead = async (req, res) => {
+  try {
+    //// single hit mark as read notification all notification mark as read
+    const adminId = req.user._id;
+
+    await notificationSchema.updateMany(
+      { adminId: adminId, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.status(200).json({
+      message: "notifications marked as read",
     });
   } catch (error) {
     res.status(400).json({ message: error.message });

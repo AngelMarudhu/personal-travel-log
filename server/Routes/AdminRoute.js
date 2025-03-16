@@ -7,6 +7,8 @@ import {
   blockUser,
   deleteUser,
   getAllUsers,
+  getNotificationAdmin,
+  markNotificationAsRead,
   unBlockeUser,
 } from "../Controllers/Admin/AdminController.js";
 
@@ -38,4 +40,18 @@ adminRouter.put(
   authenticateUser,
   authorizeRoles("admin"),
   unBlockeUser
+);
+
+adminRouter.get(
+  "/get-notification",
+  authenticateUser,
+  authorizeRoles("admin"),
+  getNotificationAdmin
+);
+
+adminRouter.put(
+  "/mark-notification-as-read",
+  authenticateUser,
+  authorizeRoles("admin"),
+  markNotificationAsRead
 );

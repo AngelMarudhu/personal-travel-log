@@ -5,7 +5,7 @@ import notficationSchema from "../Models/notficationSchema.js";
 
 export const initReportSpamSocket = (io) => {
   io.on("connection", (socket) => {
-    console.log("user connected report spam", socket.id);
+    console.log("Report Spam Socket", socket.id);
 
     socket.on("reportSpam", async (data) => {
       //   console.log(data);

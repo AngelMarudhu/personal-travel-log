@@ -3,7 +3,7 @@ import travelLogSchema from "../Models/travelLogSchema.js";
 
 export const initCommentSocket = (io) => {
   io.on("connection", (socket) => {
-    console.log("user connected from comment", socket.id);
+    console.log("Comment Socket", socket.id);
 
     socket.on("comment", async (data) => {
       const { logId, comment, userId } = data;

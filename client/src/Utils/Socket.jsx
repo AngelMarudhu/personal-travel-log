@@ -49,11 +49,12 @@ const useSocket = () => {
     };
   }, []);
 
+  // Based on event this promise will happen
   const emitEvent = (event, data) => {
     return new Promise((resolve, reject) => {
       socket.emit(event, data, (response) => {
         if (response?.error) {
-          console.error(`Error in ${event}:`, response.error);
+          console.error(`Error in ${event}`, response.error);
           setSocketError(response.error);
           reject(response.error);
         } else {
@@ -65,20 +66,20 @@ const useSocket = () => {
 
   const likeTravelLog = (data) => {
     if (!data) return;
-    emitEvent("likes", data).catch((err) => console.warn("Like failed:", err));
+    emitEvent("likes", data).catch((err) => console.warn("Like failed", err));
   };
 
   const commentTravelLog = (data) => {
     if (!data) return;
     emitEvent("comment", data).catch((err) =>
-      console.warn("Comment failed:", err)
+      console.warn("Comment failed", err)
     );
   };
 
   const reportSpam = (data) => {
     if (!data) return;
     emitEvent("reportSpam", data).catch((err) =>
-      console.warn("Report failed:", err)
+      console.warn("Report failed", err)
     );
   };
 

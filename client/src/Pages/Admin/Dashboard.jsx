@@ -3,10 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../Redux/AuthSlice";
 import AdminSearchUsers from "./AdminSearchUsers";
 import { setSearchUserName } from "../../Redux/Admin/AdminSlice";
-import { IoMdNotifications } from "react-icons/io";
+import { IoMdNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import useSocket from "../../Utils/Socket";
+// import NotificationList from "../../Components/AdminLogComponents/NotificationList";
 
 const ManageUser = lazy(() => import("./ManageUser"));
+const NotificationList = lazy(() =>
+  import("../../Components/AdminLogComponents/NotificationList")
+);
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,10 +18,11 @@ const Dashboard = () => {
   const [focus, setFocus] = useState(false);
   const [selectedUserFromSearch, setSelectedUserFromSearch] = useState(null);
   const dispatch = useDispatch();
+  const [toggleNotificationList, setToggleNotificationList] = useState(false);
 
   const { notification } = useSocket();
 
-  console.log(notification);
+  // console.log(notification);
 
   // console.log(selectedUserFromSearch);
 
@@ -51,7 +56,7 @@ const Dashboard = () => {
 
   return (
     <div className="w-full h-screen bg-white overflow-hidden">
-      <header className="flex bg-cyan-200 mb-3 shadow-2xl justify-between items-center p-4">
+      <header className="flex bg-cyan-200 mb-3 shadow-2xl justify-between items-center p-4 relative">
         <h1>Welcome, Admin!</h1>
 
         <div className="relative rounded-lg p-2">
@@ -77,16 +82,35 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-        <div className="flex items-center border-2 p-2 rounded-lg">
+        <div
+          className="flex items-center border-2 p-2 rounded-lg cursor-pointer"
+          onClick={() => setToggleNotificationList(!toggleNotificationList)}
+        >
           Spam User
-          <span>
-            <IoMdNotifications className="text-red-500 text-2xl" />
-          </span>
+          {notification.length > 0 ? (
+            <div className="flex items-center gap-2">
+              <IoMdNotifications className="text-2xl" fill="red" />
+              <span>{notification?.length}</span>
+            </div>
+          ) : (
+            <IoIosNotificationsOutline className="text-2xl" fill="red" />
+          )}
         </div>
 
         <button className="cursor-pointer" onClick={handleClick}>
           Logout
         </button>
+
+        {toggleNotificationList && (
+          <div className="absolute top-20 z-100 right-55 w-2/5 h-auto bg-white p-4 rounded-lg shadow-lg">
+            <Suspense fallback={<div>Loading...</div>}>
+              <NotificationList
+                notifications={notification}
+                onCloseNotificationList={setToggleNotificationList}
+              />
+            </Suspense>
+          </div>
+        )}
       </header>
       <div className="w-full relative flex gap-4 p-4">
         <div className="w-1/3 bg-white p-4 shadow-lg rounded-lg">

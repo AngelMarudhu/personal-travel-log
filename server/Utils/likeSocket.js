@@ -3,7 +3,7 @@ import travelLogSchema from "../Models/travelLogSchema.js";
 
 export const initLikeSchema = (io) => {
   io.on("connection", (socket) => {
-    console.log("Like user connected", socket.id);
+    console.log("Like Socket", socket.id);
 
     socket.on("likes", async (data) => {
       const { logId, userId } = data;

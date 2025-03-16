@@ -6,6 +6,7 @@ import adminSlice from "../Redux/Admin/AdminSlice.jsx";
 import searchLogSlice from "../Redux/SearchLogSlice.jsx";
 import { getCommentTravelLog } from "../Features/TravelLogFeature.jsx";
 import { getSavedLogFeature } from "../Features/SavedLogFeature.jsx";
+import { getNotificationApi } from "../Features/Admin/NotificationFeature.jsx";
 import userInfoSlice from "../Redux/Traveler/userInfoSlice.jsx";
 import savedLogSlice from "../Redux/Traveler/SavedLogSlice.jsx";
 
@@ -36,10 +37,12 @@ export const store = configureStore({
     savedLog: savedLogSlice,
     [getCommentTravelLog.reducerPath]: getCommentTravelLog.reducer,
     [getSavedLogFeature.reducerPath]: getSavedLogFeature.reducer,
+    [getNotificationApi.reducerPath]: getNotificationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       getCommentTravelLog.middleware,
-      getSavedLogFeature.middleware
+      getSavedLogFeature.middleware,
+      getNotificationApi.middleware
     ),
 });
