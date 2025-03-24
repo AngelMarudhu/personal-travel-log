@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
-import { initLikeSchema } from "./LikeSocket.js";
+// import { initLikeSchema } from "./LikeSocket.js";
 import { initCommentSocket } from "./commentSocket.js";
 import { initReportSpamSocket } from "./reportSpamSocket.js";
+import { initLikeSchema } from "./likeSocket.js";
 
 let io;
 
