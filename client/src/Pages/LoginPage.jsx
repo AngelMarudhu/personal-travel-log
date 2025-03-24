@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { loginUser } from "../Features/AuthFeatures";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const { isLoading, error } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {

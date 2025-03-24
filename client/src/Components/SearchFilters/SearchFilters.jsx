@@ -9,7 +9,7 @@ import {
 } from "../../Redux/SearchLogSlice";
 import useDebouncing from "../../CustomHooks/useDebouncing";
 import { searchLogByLocation } from "../../Features/TravelLogFeature";
-import _, { set } from "lodash";
+import _ from "lodash";
 
 const SearchFilters = () => {
   const [showFilters, setShowFilters] = useState(false);

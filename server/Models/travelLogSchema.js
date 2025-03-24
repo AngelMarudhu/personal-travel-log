@@ -51,6 +51,10 @@ const TravelLogSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
+    expenses: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Expenses",
+    },
   },
   { timestamps: true }
 );

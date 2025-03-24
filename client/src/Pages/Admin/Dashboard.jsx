@@ -1,16 +1,15 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../Redux/AuthSlice";
-import AdminSearchUsers from "./AdminSearchUsers";
 import { setSearchUserName } from "../../Redux/Admin/AdminSlice";
 import { IoMdNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import useSocket from "../../Utils/Socket";
-// import NotificationList from "../../Components/AdminLogComponents/NotificationList";
 
 const ManageUser = lazy(() => import("./ManageUser"));
 const NotificationList = lazy(() =>
   import("../../Components/AdminLogComponents/NotificationList")
 );
+const AdminSearchUsers = lazy(() => import("./AdminSearchUsers"));
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,10 +20,6 @@ const Dashboard = () => {
   const [toggleNotificationList, setToggleNotificationList] = useState(false);
 
   const { notification } = useSocket();
-
-  // console.log(notification);
-
-  // console.log(selectedUserFromSearch);
 
   useEffect(() => {
     if (selectedUserFromSearch) {
@@ -89,11 +84,11 @@ const Dashboard = () => {
           Spam User
           {notification.length > 0 ? (
             <div className="flex items-center gap-2">
-              <IoMdNotifications className="text-2xl" fill="red" />
+              <IoMdNotifications className="text-2xl" />
               <span>{notification?.length}</span>
             </div>
           ) : (
-            <IoIosNotificationsOutline className="text-2xl" fill="red" />
+            <IoIosNotificationsOutline className="text-2xl" />
           )}
         </div>
 

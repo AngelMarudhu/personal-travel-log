@@ -18,7 +18,7 @@ const ReportForm = ({ toggleReportForm, log, userId }) => {
     if (reportStatus === "success") {
       toggleReportForm(null);
     }
-  }, [reportStatus]);
+  }, [toggleReportForm, reportStatus]);
 
   const configReportedTypes = [
     {

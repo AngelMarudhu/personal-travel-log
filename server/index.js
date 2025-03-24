@@ -64,6 +64,22 @@ dotenv.config({
 // };
 // deleteLike();
 
+// const updatedOldTravelLog = async (req, res) => {
+//   try {
+//     const result = await travelLogSchema.updateMany(
+//       { expenses: { $exists: false } }, // Only update if expenses field is missing
+//       { $set: { expenses: null } } // Add expenses field with null by default
+//     );
+
+//     console.log(`✅ Updated ${result.modifiedCount} travel logs.`);
+//     mongoose.disconnect();
+//   } catch (error) {
+//     console.error("❌ Error updating travel logs:", error);
+//   }
+// };
+
+// updatedOldTravelLog();
+
 const server = http.createServer(app);
 
 initSocket(server);

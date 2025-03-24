@@ -4,7 +4,6 @@ import likeSchema from "../../Models/likeSchema.js";
 import userSchema from "../../Models/UserSchema.js";
 import bcrypt from "bcryptjs";
 import { sentOtp } from "../../Middleware/Nodemailer.js";
-import mongoose from "mongoose";
 
 let otpStorage = {};
 
@@ -69,7 +68,7 @@ export const getTravelLog = async (req, res) => {
       .find()
       .skip(skip)
       .limit(10)
-      .populate("user", "name");
+      .populate([{ path: "user", select: "name" }, { path: "expenses" }]);
 
     const totalCount = await travelLogSchema.countDocuments();
 
@@ -93,7 +92,7 @@ export const updateTravelLog = async (req, res) => {
     const { title, description, location, cost, date, placesToVisit } =
       req.body;
 
-    // console.log(req.body);
+    console.log(req.body);
 
     const userId = req.user._id.toString();
     const travelLog = await travelLogSchema.findById(id);
@@ -113,7 +112,7 @@ export const updateTravelLog = async (req, res) => {
       {
         title,
         description,
-        location,
+        toLocation: location.toLowerCase(),
         cost,
         date,
         placesToVisit,

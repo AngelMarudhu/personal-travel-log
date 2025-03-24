@@ -5,15 +5,10 @@ import {
 } from "../../Features/Admin/NotificationFeature";
 
 const NotificationList = ({ notifications, onCloseNotificationList }) => {
-  // console.log(notifications);
   const notificationRef = useRef(null);
-
-  // console.log(notificationRef);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // console.log(event.target);
-
       if (
         notificationRef.current &&
         !notificationRef.current.contains(event.target)
@@ -41,8 +36,6 @@ const NotificationList = ({ notifications, onCloseNotificationList }) => {
       console.log(error);
     }
   };
-
-  // console.log(notificationList);
 
   return (
     <div ref={notificationRef}>

@@ -44,17 +44,23 @@ const adminSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getAllUserDetails.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
 
     builder.addCase(getAllUserDetails.fulfilled, (state, action) => {
-      // console.log(action.payload);
       state.isLoading = false;
       state.users = action.payload.travelers;
       state.adminDetails = action.payload.adminDetails;
     });
 
+    builder.addCase(getAllUserDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.error;
+    });
+
     builder.addCase(deleteUserData.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
       state.deleted.isDeleted = false;
     });
 
@@ -67,6 +73,7 @@ const adminSlice = createSlice({
 
     builder.addCase(deleteUserData.rejected, (state, action) => {
       state.isLoading = false;
+      state.deleted.isDeleted = false;
       state.error = action.payload.error;
     });
 
@@ -89,6 +96,7 @@ const adminSlice = createSlice({
 
     builder.addCase(unBlockUserFeature.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
       state.unblocked.isUnblocked = false;
     });
 
@@ -97,6 +105,7 @@ const adminSlice = createSlice({
       state.blocked.isBlocked = false;
       state.unblocked.isUnblocked = action.payload.success;
       state.unblocked.message = action.payload.message;
+      state.error = null;
     });
 
     builder.addCase(unBlockUserFeature.rejected, (state, action) => {

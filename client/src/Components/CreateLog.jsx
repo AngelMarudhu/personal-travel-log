@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { createTraveLog } from "../Features/TravelLogFeature";
 import { useDispatch, useSelector } from "react-redux";
 import useImageUpload from "../CustomHooks/useImageUpload";
@@ -10,6 +10,7 @@ const CreateLog = () => {
   });
   const [autoCompleteLocation, setAutoCompleteLocation] = useState([]);
   const [handleField, setHandleField] = useState(null);
+  const [locationFetching, setLocationFetching] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
     fromLat: "",
     fromLng: "",
@@ -35,19 +36,27 @@ const CreateLog = () => {
     },
   });
 
-  const { error, handleImageChange, isUploading, uploadImages, uploadedUrls } =
-    useImageUpload();
+  const {
+    error,
+    handleImageChange,
+    isUploading,
+    uploadImages,
+    uploadedUrls,
+    isUploaded,
+  } = useImageUpload();
 
   const fetchAutoCompleteLocations = async (query) => {
     const LOCATION_API_KEY = "pk.dca6843e12f720c179835eaa8f74ab3e"; //// LOCATIONIQ API KEY
     if (!query) return;
     try {
       if (query.length < 3) return;
+      setLocationFetching(true);
       const response = await fetch(
         `https://us1.locationiq.com/v1/autocomplete.php?key=${LOCATION_API_KEY}&q=${query}&limit=3&format=json`
       );
       const data = await response.json();
       setAutoCompleteLocation(data);
+      setLocationFetching(false);
     } catch (error) {
       console.log(error);
     }
@@ -122,12 +131,10 @@ const CreateLog = () => {
 
   const getGeoLocation = (e) => {
     e.preventDefault();
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          console.log({ latitude, longitude });
           setLog((prev) => {
             return {
               ...prev,
@@ -140,7 +147,10 @@ const CreateLog = () => {
           alert("Location fetched successfully");
         },
         (error) => {
-          alert("Failed to get your location please allow location access");
+          alert(
+            "Failed to get your location please allow location access",
+            error
+          );
         }
       );
     } else {
@@ -205,7 +215,7 @@ const CreateLog = () => {
       <div>
         <form action="" onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
             value={log.title}
@@ -214,7 +224,7 @@ const CreateLog = () => {
             placeholder="Title"
           />
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
             value={log.description}
@@ -224,7 +234,7 @@ const CreateLog = () => {
           />
 
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
             onFocus={() => {
@@ -236,24 +246,32 @@ const CreateLog = () => {
             placeholder="From Location"
           />
 
-          {autoCompleteLocation.length > 0 && (
-            <ul>
-              {autoCompleteLocation.map((location, index) => {
-                return (
-                  <li
-                    onClick={(e) => handleSelectSuggestion(location)}
-                    className="p-2 hover:bg-gray-200 cursor-pointer rounded-lg"
-                    key={index}
-                  >
-                    {location.display_name}
-                  </li>
-                );
-              })}
-            </ul>
+          {locationFetching ? (
+            <div className="text-blue-500 text-center">
+              Location Fetching...
+            </div>
+          ) : (
+            <div>
+              {autoCompleteLocation.length > 0 && (
+                <ul>
+                  {autoCompleteLocation.map((location, index) => {
+                    return (
+                      <li
+                        onClick={(e) => handleSelectSuggestion(location)}
+                        className="p-2 hover:bg-gray-200 cursor-pointer rounded-lg"
+                        key={index}
+                      >
+                        {location.display_name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
           )}
 
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text"
             onChange={handleChange}
             value={log.toLocation}
@@ -266,14 +284,14 @@ const CreateLog = () => {
           />
 
           <button className="text-cyan-600" onClick={getDistanceOfLocation}>
-            Get Distance:{" "}
+            Get Distance:
             <span className="text-black">
               {distance ? `${distance}` : "Enter Location"}
             </span>
           </button>
 
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="number"
             onChange={handleChange}
             required
@@ -281,8 +299,9 @@ const CreateLog = () => {
             name="cost"
             placeholder="Cost"
           />
+
           <input
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="date"
             name="date"
             value={log.date}
@@ -290,17 +309,17 @@ const CreateLog = () => {
             onChange={handleChange}
             placeholder="Date"
           />
-          <div className="flex justify-between items-center">
+          <div className="flex w-full flex-wrap justify-between items-center">
             <input
               type="text"
               onChange={handleToPlacesVisit}
               placeholder="Add a place to visit"
               value={place.newPlace}
               name="placesToVisit"
-              className=" p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className=" p-1 border-1 w-full border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
-              className="w-auto p-3 border-2 rounded-2xl text-sm cursor-pointer"
+              className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg text-sm cursor-pointer"
               type="button"
               onClick={(e) => handleAddPlace(e)}
             >
@@ -318,25 +337,30 @@ const CreateLog = () => {
             accept="image/*"
             id="image"
             onChange={(e) => handleImageChange(e)}
-            className="w-full mt-2 p-3 border border-gray-300 rounded-lg cursor-pointer"
+            className="w-full mt-2 p-1 border-1 border-gray-200 rounded-lg cursor-pointer"
           />
-          <div className="flex gap-2">
+          <div className="flex w-full gap-2">
             <button
               type="button"
               onClick={(e) => getGeoLocation(e)}
-              className="w-full px-6 p-2 border-2 rounded-2xl text-md cursor-pointer"
+              className="px-2 p-1 m-auto border-1 border-gray-200 rounded-2xl text-md cursor-pointer"
             >
-              Get Location
+              Location
             </button>
             <button
               type="button"
               onClick={uploadImages}
-              disabled={isUploading}
-              className="w-full px-6 p-2 border-2 rounded-2xl text-md cursor-pointer"
+              disabled={isUploading || isUploaded}
+              className="px-2 m-auto p-1 border-1 border-gray-200 rounded-2xl text-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isUploading ? "Uploading..." : "Upload Images"}
+              {isUploading ? "Uploading..." : "Upload"}
             </button>
           </div>
+          {isUploaded && (
+            <div>
+              <p className="text-green-500">Uploaded Successfully</p>
+            </div>
+          )}
 
           {log.coordinates.latitute && log.coordinates.longitude && (
             <div>

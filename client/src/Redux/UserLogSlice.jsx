@@ -3,6 +3,7 @@ import {
   deleteTravelLog,
   getUserTravelLogs,
   updateTravelLog,
+  addExpensesToDB,
 } from "../Features/UserLogFeature";
 
 const initialState = {
@@ -13,6 +14,10 @@ const initialState = {
   updateLog: null,
   deletedLog: null,
   isUpdated: false,
+  addingExpense: {
+    isAddedExpenses: false,
+    expenseMessage: null,
+  },
 };
 
 const userLogSlice = createSlice({
@@ -55,6 +60,8 @@ const userLogSlice = createSlice({
       state.updateLog = null;
       state.deletedLog = null;
       state.isUpdated = false;
+      state.addingExpense.isAddedExpenses = false;
+      state.addingExpense.expenseMessage = null;
     },
   },
   extraReducers: (builder) => {
@@ -89,6 +96,28 @@ const userLogSlice = createSlice({
     builder.addCase(deleteTravelLog.fulfilled, (state, action) => {
       state.isLoading = false;
       state.deletedLog = action.payload;
+    });
+
+    // expenses
+
+    builder.addCase(addExpensesToDB.pending, (state) => {
+      state.isLoading = true;
+      state.addingExpense.isAddedExpenses = false;
+      state.error = null;
+    });
+
+    builder.addCase(addExpensesToDB.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.addingExpense.isAddedExpenses = true;
+      state.addingExpense.expenseMessage = action.payload.message;
+      state.error = null;
+    });
+
+    builder.addCase(addExpensesToDB.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.error;
+      state.addingExpense.isAddedExpenses = false;
+      state.addingExpense.expenseMessage = null;
     });
   },
 });

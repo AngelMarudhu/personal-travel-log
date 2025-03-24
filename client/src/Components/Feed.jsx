@@ -11,13 +11,12 @@ import FeedMenu from "./FeedMenu";
 import useDebouncing from "../CustomHooks/useDebouncing";
 import _, { last } from "lodash";
 import useSocket from "../Utils/Socket";
-import { ToastContainer, toast } from "react-toastify";
-// import ReportForm from "./TravelerUserLogComponents/ReportForm";
-
-// import Comment from "./Comment";
 
 const Comment = lazy(() => import("./Comment"));
 const ReportForm = lazy(() => import("./TravelerUserLogComponents/ReportForm"));
+const ShowExpenses = lazy(() =>
+  import("./TravelerUserLogComponents/ShowExpenses.jsx")
+);
 
 const Feed = ({ userId }) => {
   const [feedMenu, setFeedMenu] = useState(null);
@@ -27,10 +26,13 @@ const Feed = ({ userId }) => {
   const debounce = useDebouncing(getTravelLogs);
   const dispatch = useDispatch();
   const [toggleReportForm, setToggleReportForm] = useState(null);
+  const [showExpenses, setShowExpenses] = useState(null);
 
   const { travelLogs, currentPage, totalPages, isLoading } = useSelector(
-    (state) => state.travelLog
+    (state) => state.travelLog,
+    _.isEqual
   );
+  //// _.isEqual is used to compare the old and new state if there is no change in the state then it will not re-render the component
 
   const { isSaved, error } = useSelector((state) => state.savedLog);
 
@@ -39,20 +41,10 @@ const Feed = ({ userId }) => {
 
   useEffect(() => {
     if (error) {
-      toast.error("Already saved", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-      });
+      window.alert("already saved");
     }
     if (isSaved) {
-      toast.success("Saved Successfully", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-      });
+      window.alert("saved successfully");
     }
   }, [error, isSaved]);
 
@@ -78,11 +70,10 @@ const Feed = ({ userId }) => {
   const handleLike = (log) => {
     setLikes((prev) => {
       const newLikes = new Map(prev);
-      const currentLikes = newLikes.get(log._id) || log.likes.length;
+      const currentLikes = newLikes.get(log._id) ?? log.likes.length;
 
       if (newLikes.has(log._id)) {
         newLikes.set(log._id, currentLikes - 1);
-        newLikes.delete(log._id);
       } else {
         newLikes.set(log._id, currentLikes + 1);
       }
@@ -94,14 +85,13 @@ const Feed = ({ userId }) => {
   };
 
   return (
-    <div className="w-full p-6 ">
-      <ToastContainer />
+    <div className="w-full p-4">
       {travelLogs?.length === 0 && (
         <div>
           <h1 className="text-center">Sorry We Aren't Ready</h1>
         </div>
       )}
-      <div className="w-full">
+      <div className="w-full ">
         {travelLogs?.map((log) => {
           const isLogDescription = log.description.length > 20;
           return (
@@ -109,33 +99,57 @@ const Feed = ({ userId }) => {
               key={log._id}
               className="bg-white mb-2 rounded-2xl overflow-hidden border border-pink-200 relative"
             >
-              <header className="p-4 bg-gray-100 flex justify-between items-center border-b-1 mb-1">
-                <div className="flex flex-col items-start space-x-4">
-                  <h2 className="capitalize ">Posted: {log.user?.name}</h2>
-                  <div className="flex flex-col items-start space-x-2 capitalize">
-                    <h2 className="text-lg font-semibold text-gray-800 capitalize">
-                      {log.title}
-                    </h2>
-                    <div className="flex flex-col gap-2 items-start space-x-2 mt-3">
-                      <h2>From: {log.fromLocation}</h2>
-                      <h2>To: {log.toLocation}📍</h2>
+              <header className="p-4 pb-0 bg-gray-100 w-full items-center border-b-1 mb-1">
+                <div className="flex flex-col min-w-full items-start space-x-4">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <div>
+                      <h2 className="capitalize text-[16px]">
+                        Traveler: {log.user?.name}
+                      </h2>
+                      <time className="text-[12px]" dateTime={log.date}>
+                        {`${new Date(log.date).toDateString()} at ${new Date(
+                          log.date
+                        ).toLocaleTimeString("en-US", {
+                          timeStyle: "short",
+                        })}`}
+                      </time>
                     </div>
+                    <button
+                      onClick={() => handleMenuPopUp(log._id)}
+                      className="cursor-pointer"
+                    >
+                      <CiMenuKebab />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleMenuPopUp(log._id)}
-                  className="cursor-pointer"
-                >
-                  <CiMenuKebab />
-                </button>
+                <div className="flex text-sm items-center mt-3 justify-center capitalize">
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-medium">From:</h2>
+                    <span className="text-gray-700">
+                      {log.fromLocation?.split(",")[0]}
+                    </span>
+                  </div>
+
+                  <div className="text-gray-400 ml-1 mr-1">→</div>
+
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-medium">To:</h2>
+                    <span className="text-gray-700">
+                      {log.toLocation?.split(",")[0]}
+                    </span>
+                  </div>
+                </div>
+                <h2 className="text-lg font-bold text-center text-gray-800 capitalize">
+                  {log.title}
+                </h2>
               </header>
-              {/* ✅ Proper Swiper Implementation ✅ */}
+
               {log.images?.length > 0 && (
                 <Swiper
                   modules={[Pagination, Navigation]}
+                  navigation={log.images.length > 1}
                   pagination={{ clickable: true }}
                   scrollbar={{ draggable: true }}
-                  navigation
                   spaceBetween={20}
                   slidesPerView={1}
                   className="w-full h-64"
@@ -143,6 +157,7 @@ const Feed = ({ userId }) => {
                   {log.images.map((image, index) => (
                     <SwiperSlide key={index}>
                       <img
+                        loading="lazy"
                         src={image}
                         alt={`${log.title} - Image ${index + 1}`}
                         className="w-full h-64 object-cover bg-amber-200"
@@ -152,10 +167,6 @@ const Feed = ({ userId }) => {
                 </Swiper>
               )}
               <section className="p-4">
-                <p className="text-gray-600 text-sm capitalize">
-                  Places Visit: {log.placesToVisit?.join(",⚓")}
-                </p>
-                <br />
                 <p className="text-gray-600 capitalize">
                   {toggleDescription || !isLogDescription
                     ? `${log.description}`
@@ -172,11 +183,17 @@ const Feed = ({ userId }) => {
                     </button>
                   )}
                 </p>
+
+                <br />
+
+                <p className="text-gray-600 text-sm capitalize">
+                  Places Visit: {log.placesToVisit?.join(" → ")}
+                </p>
               </section>
               <footer className="p-4 bg-gray-50 flex items-center justify-between text-sm text-gray-500">
                 <button
                   onClick={() => handleLike(log)}
-                  className="p-2 rounded-lg bg-blue-500 text-white cursor-pointer"
+                  className="p-2 rounded-lg text-black cursor-pointer hover:bg-gray-200 hover:border-gray-200 hover:transition-opacity duration-300 ease-in-out "
                 >
                   Like❤️
                   <span className="text-gray-800 font-semibold ml-3">
@@ -184,15 +201,25 @@ const Feed = ({ userId }) => {
                   </span>
                 </button>
                 <button
-                  className="p-2 border-2 rounded-2xl cursor-pointer"
+                  className="p-2 hover:bg-gray-200 rounded-lg cursor-pointer hover:transition-opacity duration-300 ease-in-out"
                   onClick={() => handleCommentPreview(log._id)}
                 >
                   Comment
                 </button>
-                {/* <time dateTime={log.date}>
-                  {new Date(log.date).toLocaleDateString()}
-                  </time> */}
-                <span className="text-sm">Cost: {log.cost} ₹</span>
+                <div>
+                  <span
+                    onClick={() =>
+                      setShowExpenses(() => {
+                        setShowExpenses(
+                          showExpenses === log._id ? null : log._id
+                        );
+                      })
+                    }
+                    className="p-2 hover:bg-gray-200 rounded-lg cursor-pointer hover:transition-opacity duration-300 ease-in-out"
+                  >
+                    Expenses
+                  </span>
+                </div>
               </footer>
               {feedMenu === log._id && (
                 <FeedMenu
@@ -202,12 +229,22 @@ const Feed = ({ userId }) => {
               )}
 
               {commentPreview === log._id && (
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense
+                  fallback={
+                    <div className="animate-pulse bg-gray-300 h-10 w-full"></div>
+                  }
+                >
                   <Comment
                     log={log}
                     onClosePreview={setCommentPreview}
                     userId={userId}
                   />
+                </Suspense>
+              )}
+
+              {showExpenses === log._id && (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ShowExpenses logs={log} />
                 </Suspense>
               )}
 
@@ -229,7 +266,7 @@ const Feed = ({ userId }) => {
         <button
           onClick={handleLoadMore}
           disabled={currentPage >= totalPages}
-          className={`w-full p-3 border-2 cursor-pointer rounded-2xl ${
+          className={`p-1 border-2 cursor-pointer rounded-xl ${
             currentPage >= totalPages
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-transparent text-black"

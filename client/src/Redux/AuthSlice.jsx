@@ -25,6 +25,12 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(registerUser.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.isRegistered = false;
+    });
+
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.isRegistered = true;
       state.isLoading = false;
@@ -41,17 +47,20 @@ const authSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     });
+
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.isLoggedIn = true;
       state.isLoading = false;
+      state.isRegistered = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
 
       localStorage.setItem("user", JSON.stringify(state.user));
       localStorage.setItem("token", state.token);
     });
+
     builder.addCase(loginUser.rejected, (state, action) => {
-      console.log(action.payload.error);
+      // console.log(action.payload.error);
       state.isLoading = false;
       state.error = action.payload.error;
     });
@@ -65,6 +74,7 @@ const authSlice = createSlice({
     builder.addCase(getUserInfo.fulfilled, (state, action) => {
       state.isLoading = false;
       state.user = action.payload.user;
+      state.error = null;
 
       localStorage.removeItem("user");
       localStorage.setItem("user", JSON.stringify(state.user));

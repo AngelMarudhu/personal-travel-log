@@ -20,9 +20,9 @@ const ChangeEmail = () => {
       dispatch(resetPreviosSession());
       dispatch(getUserInfo());
     }
-  }, [isEmailChanged]);
+  }, [isEmailChanged, dispatch]);
 
-  const handleEmail = (e) => {
+  const handleEmail = () => {
     dispatch(changeEmail({ newEmail: email }));
   };
 

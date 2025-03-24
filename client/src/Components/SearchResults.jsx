@@ -11,7 +11,6 @@ import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import FeedMenu from "./FeedMenu";
 import { getNearByPlaces } from "../Features/TravelLogFeature";
-// import { useLocation } from "react-router";
 
 const SearchFilters = lazy(() => import("./SearchFilters/SearchFilters"));
 

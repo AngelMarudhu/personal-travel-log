@@ -22,6 +22,7 @@ import {
   getSavedLog,
   postSavedLog,
 } from "../Controllers/TravelLog/SavedLog.js";
+import { addUserExpenses } from "../Controllers/TravelLog/UserTravelController.js";
 
 export const travelerRouter = express.Router();
 
@@ -58,3 +59,7 @@ travelerRouter.post("/post-saved-log", postSavedLog);
 travelerRouter.get("/get-saved-log", getSavedLog);
 
 travelerRouter.delete("/delete-saved-log/:id", deleteSavedLog);
+
+// user routes expenses
+
+travelerRouter.post("/add-user-expenses", addUserExpenses);

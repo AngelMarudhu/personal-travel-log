@@ -16,9 +16,7 @@ const FeedMenu = ({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const { isLoading, isSaved, error } = useSelector((state) => state.savedLog);
-
-  // console.log(feedLogForSave);
+  const { isLoading } = useSelector((state) => state.savedLog);
 
   const handleEditLog = () => {
     dispatch(showEditLog());
@@ -38,7 +36,6 @@ const FeedMenu = ({
   };
 
   const handlePostSavedLog = () => {
-    // console.log(feedLogForSave);
     dispatch(postSavedLog(feedLogForSave._id));
   };
 
@@ -46,7 +43,6 @@ const FeedMenu = ({
     toggleReportForm(feedLogForSave._id);
   };
 
-  // console.log(userMenu);
   return (
     <div>
       <div className="absolute top-0 right-10 bg-white shadow-lg rounded-lg p-4 z-50">

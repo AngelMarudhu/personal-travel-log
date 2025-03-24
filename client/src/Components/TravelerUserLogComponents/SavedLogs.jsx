@@ -54,22 +54,22 @@ const SavedLogs = () => {
                         fill="red"
                       />
                     </div>
-                    <p>Posted By: {log.travelLog.user.name}</p>
-                    <h1>Title: {log.travelLog.title}</h1>
-                    <p>Description: {log.travelLog.description}</p>
-                    <p>Budget Of Travel: {log.travelLog.cost} ₹INR</p>
+                    <p>Posted By: {log.travelLog?.user?.name}</p>
+                    <h1>Title: {log.travelLog?.title}</h1>
+                    <p>Description: {log.travelLog?.description}</p>
+                    <p>Budget Of Travel: {log.travelLog?.cost} ₹INR</p>
                     <div className="flex items-center gap-2">
                       <p>
                         From Location:{" "}
-                        {log.travelLog.fromLocation.split(",")[0]},
+                        {log.travelLog?.fromLocation.split(",")[0]},
                       </p>
                       <p>
-                        To Location: {log.travelLog.toLocation.split(",")[0]}
+                        To Location: {log.travelLog?.toLocation.split(",")[0]}
                       </p>
                     </div>
                     <p>
                       Date of Post:{" "}
-                      {new Date(log.travelLog.createdAt).toLocaleDateString()}
+                      {new Date(log.travelLog?.createdAt).toLocaleDateString()}
                     </p>
                     <p>
                       Saved At: {new Date(log.savedAt).toLocaleDateString()}

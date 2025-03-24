@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const AdminSearchUsers = ({
   users,
@@ -6,16 +6,12 @@ const AdminSearchUsers = ({
   setSelectedUserFromSearch,
   closeFocus,
 }) => {
-  //   console.log(users, searchQuery);
-
   const filterdUsers = users.filter((user) => {
     return user.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  //   console.log(filterdUsers);
-
   return (
-    <div className="w-full h-full p-4 capitalize">
+    <div className="w-full h-full p-4">
       <h1 className="border-b-1 mb-2 border-gray-300 text-center">
         Find your right user here hunt user here
       </h1>

@@ -8,6 +8,7 @@ const useImageUpload = () => {
   const [images, setImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedUrls, setUploadedUrls] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false);
   const [error, setError] = useState(null);
 
   const handleImageChange = (e) => {
@@ -22,9 +23,13 @@ const useImageUpload = () => {
   };
 
   const uploadImages = async () => {
+    if (images.length === 0) {
+      return setError("no image selected");
+    }
     setIsUploading(true);
     setError(null);
     setUploadedUrls([]);
+    setIsUploaded(false);
 
     const uploadImages = images.map(async (file) => {
       const formData = new FormData();
@@ -54,6 +59,7 @@ const useImageUpload = () => {
     try {
       const urls = await Promise.all(uploadImages);
       setUploadedUrls(urls);
+      setIsUploaded(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -70,6 +76,7 @@ const useImageUpload = () => {
     error,
     handleImageChange,
     uploadImages,
+    isUploaded,
   };
 };
 

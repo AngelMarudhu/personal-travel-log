@@ -13,20 +13,23 @@ import { toast, ToastContainer } from "react-toastify";
 import SearchLog from "./SearchLog";
 import { FaUser, FaEdit } from "react-icons/fa";
 import { showEditOptionPanel } from "../../Redux/Traveler/userInfoSlice";
-// import { resetPreviousSession } from "../../Redux/UserLogSlice";
 
 const UpdateLog = lazy(() => import("../../Components/UpdateLog"));
 const UserLogUpdateInformation = lazy(() =>
   import("../../Components/TravelerUserLogComponents/UserLogUpdateInformation")
+);
+const Expenses = lazy(() =>
+  import(
+    "../../Components/TravelerUserLogComponents/UserManagementComponents/Expenses.jsx"
+  )
 );
 
 const UserLog = () => {
   const [feedMenu, setFeedMenu] = useState(null);
   const dispatch = useDispatch();
   const debounce = useDebouncing(getUserTravelLogs);
-  const { yourLogs, isEditing, updateLog, isUpdated } = useSelector(
-    (state) => state.userLog
-  );
+  const [isOpenExpensePopup, setIsExpensePopup] = useState(null);
+  const { yourLogs, isEditing } = useSelector((state) => state.userLog);
   const { user } = useSelector((state) => state.auth);
   const { showEditPanel } = useSelector((state) => state.userInfo);
 
@@ -51,8 +54,6 @@ const UserLog = () => {
         </header>
       </div>
       <main className="flex space-x-6 mt-6 relative">
-        {/* user data */}
-
         <div className="w-1/3 bg-white p-4 shadow-lg rounded-lg capitalize">
           <h2 className="text-2xl font-semibold">User Data</h2>
           <aside className="mt-4 w-full border-2 border-gray-400 rounded-lg p-2">
@@ -84,28 +85,30 @@ const UserLog = () => {
                 className="bg-white mb-2 rounded-2xl overflow-hidden border border-pink-200 relative w-full"
               >
                 <header className="p-4 bg-gray-100 flex justify-between items-center border-b-1 mb-1">
-                  <div className="flex flex-col items-start space-x-4">
-                    <div className="flex flex-col items-start space-x-2">
-                      <h2 className="text-lg font-semibold text-gray-800 capitalize">
-                        Title: {log.title}
-                      </h2>
-                      <div className="flex flex-col items-start gap-1">
-                        <h3>From Location: {log.fromLocation}</h3>
-                        <h3>To Location: {log.toLocation}</h3>
+                  <div className="flex flex-col min-w-full items-start space-x-4">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <div>
+                        <h2 className="capitalize text-[16px]">
+                          Title: {log.title}
+                        </h2>
+                        <time className="text-[12px]" dateTime={log.date}>
+                          {`${new Date(log.date).toDateString()} at ${new Date(
+                            log.date
+                          ).toLocaleTimeString("en-US", {
+                            timeStyle: "short",
+                          })}`}
+                        </time>
                       </div>
-                      <p className="text-gray-600 text-sm capitalize">
-                        {log.placesToVisit?.join(",⚓")}
-                      </p>
+                      <button
+                        onClick={() => handleMenuPopUp(log._id)}
+                        className="cursor-pointer"
+                      >
+                        <CiMenuKebab />
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleMenuPopUp(log._id)}
-                    className="cursor-pointer"
-                  >
-                    <CiMenuKebab />
-                  </button>
                 </header>
-                {/* ✅ Proper Swiper Implementation ✅ */}
+                {/* Proper Swiper Implementation */}
                 {log.images?.length > 0 && (
                   <Swiper
                     modules={[Pagination, Navigation]}
@@ -137,20 +140,37 @@ const UserLog = () => {
                       {log.likes.length}
                     </span>
                   </button>
-                  <time dateTime={log.date}>
-                    {new Date(log.date).toLocaleDateString()}
-                  </time>
-                  <span className="text-sm">Cost: {log.cost} ₹</span>
+
+                  <button
+                    className="p-2 border-1 rounded-2xl cursor-pointer"
+                    onClick={() => {
+                      setIsExpensePopup(
+                        isOpenExpensePopup === log._id ? null : log._id
+                      );
+                    }}
+                  >
+                    Add Expenses
+                  </button>
                 </footer>
                 {feedMenu === log._id && (
                   <FeedMenu
                     userMenu={true}
                     logs={log}
                     closeMenu={() => {
-                      // console.log("close");
                       setFeedMenu(null);
                     }}
                   />
+                )}
+
+                {isOpenExpensePopup === log._id && (
+                  <div>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Expenses
+                        logs={log}
+                        closeExpensePopup={() => setIsExpensePopup(null)}
+                      />
+                    </Suspense>
+                  </div>
                 )}
               </article>
             );

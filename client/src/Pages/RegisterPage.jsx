@@ -9,11 +9,10 @@ const RegisterPage = () => {
     email: "",
     password: "",
   });
-
-  const data = useSelector((state) => state.auth);
-  //   console.log(data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const data = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (data.isRegistered) {
@@ -74,7 +73,7 @@ const RegisterPage = () => {
             className="p-3 border w-30 m-auto rounded-lg cursor-pointer "
             type="submit"
           >
-            Register
+            {data.isLoading ? "Registering..." : "Register"}
           </button>
         </form>
         {data.error && <p className=" text-red-500 ">{data.error.message}</p>}

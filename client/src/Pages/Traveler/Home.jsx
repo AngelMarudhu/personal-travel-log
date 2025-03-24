@@ -1,4 +1,4 @@
-import React, { useEffect, lazy, Suspense, useState, useRef, use } from "react";
+import React, { useEffect, lazy, Suspense, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { FaUser } from "react-icons/fa";
@@ -30,24 +30,13 @@ const Home = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setMobileMenu(true);
-      } else {
-        setMobileMenu(false);
-        setToggleCreation(false);
-        setToggleSearchLog(false);
-      }
+      setMobileMenu(window.innerWidth <= 768);
     };
     handleResize();
 
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
-  }, [window.innerWidth]);
-
-  // console.log(mobileMenu);
-
-  // console.log(user);
+  }, []);
 
   const handleProfile = () => {
     navigate("/user-profile");
@@ -96,6 +85,7 @@ const Home = () => {
                 paddingRight: "0.5rem",
                 paddingLeft: "0.5rem",
                 gap: "1rem",
+                height: "40px",
               }}
             >
               <div
@@ -114,6 +104,11 @@ const Home = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.5 }}
                     className="absolute border-2 top-12 right-0 bg-white shadow-lg rounded-lg p-2"
+                    style={{
+                      transform: "translateZ(0)",
+                      width: "100px",
+                      minHeight: "80px",
+                    }}
                   >
                     <button
                       className=" cursor-pointer border-b-2 "
@@ -150,20 +145,21 @@ const Home = () => {
           )}
         </header>
       </div>
-
-      <main className="flex flex-col space-y-4 md:flex-row space-x-6 mt-6 p-4 absolute top-10 left-0 right-0">
+      <main className="grid grid-cols-1 gap-6 md:grid-cols-4 mt-6 p-4 pt-16">
         {(!mobileMenu || toggleCreation) && (
-          <div className="w-full md:w-1/3 bg-white p-4 shadow-lg rounded-lg">
+          <div className="bg-white p-4 shadow-lg rounded-lg">
             <CreateLog />
           </div>
         )}
-        <div className="w-full md:w-1/2 bg-white p-4 shadow-lg rounded-lg">
+
+        <div className="md:col-span-2 bg-white p-4 shadow-lg rounded-lg">
           <Suspense fallback={<div>Loading...</div>}>
             <Feed userId={user.id} />
           </Suspense>
         </div>
+
         {(!mobileMenu || toggleTrending) && (
-          <div className="w-full md:w-1/3 bg-white p-4 shadow-lg rounded-lg">
+          <div className="bg-white p-4 shadow-lg rounded-lg min-h-[200px]">
             <Suspense fallback={<div>Loading...</div>}>
               <TrendingPlace />
             </Suspense>
