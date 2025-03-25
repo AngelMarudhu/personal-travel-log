@@ -161,7 +161,9 @@ export const getTravelLogById = async (req, res) => {
 
     // console.log(id);
 
-    const yourTravelLogs = await travelLogSchema.find({ user: id });
+    const yourTravelLogs = await travelLogSchema
+      .find({ user: id })
+      .populate("expenses");
 
     if (!yourTravelLogs) {
       return res.status(404).json({ message: "travel log not found" });

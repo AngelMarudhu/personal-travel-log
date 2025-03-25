@@ -13,6 +13,7 @@ import { toast, ToastContainer } from "react-toastify";
 import SearchLog from "./SearchLog";
 import { FaUser, FaEdit } from "react-icons/fa";
 import { showEditOptionPanel } from "../../Redux/Traveler/userInfoSlice";
+import ShowExpenses from "../../Components/TravelerUserLogComponents/ShowExpenses.jsx";
 
 const UpdateLog = lazy(() => import("../../Components/UpdateLog"));
 const UserLogUpdateInformation = lazy(() =>
@@ -32,6 +33,8 @@ const UserLog = () => {
   const { yourLogs, isEditing } = useSelector((state) => state.userLog);
   const { user } = useSelector((state) => state.auth);
   const { showEditPanel } = useSelector((state) => state.userInfo);
+  const [showExpensesDetails, setShowExpensesDetails] = useState(null);
+  const [expenseDetailsWithLog, setExpenseDetailsWithLog] = useState(null);
 
   useEffect(() => {
     debounce();
@@ -41,7 +44,10 @@ const UserLog = () => {
     setFeedMenu(feedMenu === id ? null : id);
   };
 
-  // console.log(yourLogs);
+  const handleShowExpenses = (log) => {
+    setShowExpensesDetails(showExpensesDetails === log._id ? null : log._id);
+    setExpenseDetailsWithLog(expenseDetailsWithLog === log._id ? null : log);
+  };
 
   return (
     <div className="p-4">
@@ -70,6 +76,15 @@ const UserLog = () => {
           </aside>
           <div className="flex justify-between mt-4 border-2 border-gray-400 rounded-lg p-2">
             <a href="/saved-logs">Your Saved Logs</a>
+          </div>
+
+          <div className="flex flex-col justify-between mt-4 border-2 border-gray-400 rounded-lg p-2">
+            <h1>Your Trip Expenses</h1>
+            {showExpensesDetails && (
+              <div>
+                <ShowExpenses logs={expenseDetailsWithLog} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -109,7 +124,7 @@ const UserLog = () => {
                   </div>
                 </header>
                 {/* Proper Swiper Implementation */}
-                {log.images?.length > 0 && (
+                {/* {log.images?.length > 0 && (
                   <Swiper
                     modules={[Pagination, Navigation]}
                     pagination={{ clickable: true }}
@@ -122,6 +137,7 @@ const UserLog = () => {
                     {log.images.map((image, index) => (
                       <SwiperSlide key={index}>
                         <img
+                          loading="lazy"
                           src={image}
                           alt={`${log.title} - Image ${index + 1}`}
                           className="w-full h-70 object-cover bg-amber-200"
@@ -129,7 +145,7 @@ const UserLog = () => {
                       </SwiperSlide>
                     ))}
                   </Swiper>
-                )}
+                )} */}
                 <section className="p-4">
                   <p className="text-gray-600 capitalize">{log.description}</p>
                 </section>
@@ -139,6 +155,15 @@ const UserLog = () => {
                     <span className="text-gray-800 font-semibold ml-3">
                       {log.likes.length}
                     </span>
+                  </button>
+
+                  <button
+                    className="p-2 cursor-pointer"
+                    onClick={() => handleShowExpenses(log)}
+                  >
+                    {showExpensesDetails === log._id
+                      ? "Hide Expenses"
+                      : "Show Expenses"}
                   </button>
 
                   <button
