@@ -13,7 +13,14 @@ const savedLogSlice = createSlice({
   name: "savedLog",
   initialState,
 
-  reducers: {},
+  reducers: {
+    resetSavedLog: (state) => {
+      state.savedLog = [];
+      state.isLoading = false;
+      state.isSaved = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builders) => {
     builders.addCase(postSavedLog.pending, (state) => {
       state.isLoading = true;
@@ -52,5 +59,7 @@ const savedLogSlice = createSlice({
     });
   },
 });
+
+export const { resetSavedLog } = savedLogSlice.actions;
 
 export default savedLogSlice.reducer;

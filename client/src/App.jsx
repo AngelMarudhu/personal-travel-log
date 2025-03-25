@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./CustomHooks/ProtectedRoute";
@@ -12,6 +12,14 @@ const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
 const SearchResult = lazy(() => import("./Components/SearchResults"));
 
 function App() {
+  // useEffect(() => {
+  //   import("web-vitals").then(({ onCLS, onFID, onLCP }) => {
+  //     onCLS(console.log);
+  //     onFID(console.log);
+  //     onLCP(console.log);
+  //   });
+  // }, []);
+
   return (
     <div>
       <BrowserRouter>

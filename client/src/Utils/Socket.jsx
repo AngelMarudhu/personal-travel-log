@@ -1,15 +1,15 @@
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 
-// const socket = io("http://localhost:9000", {
+const socket = io("http://localhost:9000", {
+  reconnectionAttempts: 5,
+  timeout: 1000000,
+});
+
+// const socket = io("https://personal-travel-log.onrender.com", {
 //   reconnectionAttempts: 5,
 //   timeout: 10000,
 // });
-
-const socket = io("https://personal-travel-log.onrender.com", {
-  reconnectionAttempts: 5,
-  timeout: 10000,
-});
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(false);

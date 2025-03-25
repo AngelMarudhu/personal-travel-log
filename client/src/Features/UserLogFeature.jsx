@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const API_URL = "http://localhost:9000/api/traveler";
-const API_URL = "https://personal-travel-log.onrender.com/api/traveler";
+const API_URL = "http://localhost:9000/api/traveler";
+// const API_URL = "https://personal-travel-log.onrender.com/api/traveler";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -59,7 +59,7 @@ export const deleteTravelLog = createAsyncThunk(
   "delete-log",
   async (id, thunkAPI) => {
     try {
-      const response = await axios.delete(`${API_URL}/delete-travel-log/${id}`);
+      const response = await api.delete(`/delete-travel-log/${id}`);
 
       // console.log(response);
       return response.data;

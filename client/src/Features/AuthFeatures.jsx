@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const API_URL = "http://localhost:9000/api/login";
-const API_URL = "https://personal-travel-log.onrender.com/api/login";
+const API_URL = "http://localhost:9000/api/login";
+// const API_URL = "https://personal-travel-log.onrender.com/api/login";
 
 const api = axios.create({
   baseURL: API_URL,

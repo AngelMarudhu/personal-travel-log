@@ -11,6 +11,7 @@ import FeedMenu from "./FeedMenu";
 import useDebouncing from "../CustomHooks/useDebouncing";
 import _, { last } from "lodash";
 import useSocket from "../Utils/Socket";
+import { resetSavedLog } from "../Redux/Traveler/SavedLogSlice.jsx";
 
 const Comment = lazy(() => import("./Comment"));
 const ReportForm = lazy(() => import("./TravelerUserLogComponents/ReportForm"));
@@ -37,16 +38,21 @@ const Feed = ({ userId }) => {
   const { isSaved, error } = useSelector((state) => state.savedLog);
 
   // console.log(error);
-  const { likeTravelLog } = useSocket();
+  const { likeTravelLog, socketError } = useSocket();
 
   useEffect(() => {
     if (error) {
       window.alert("already saved");
+      dispatch(resetSavedLog());
     }
     if (isSaved) {
       window.alert("saved successfully");
+      dispatch(resetSavedLog());
     }
-  }, [error, isSaved]);
+    if (socketError) {
+      window.alert(socketError);
+    }
+  }, [error, isSaved, socketError]);
 
   const handleLoadMore = () => {
     if (currentPage <= totalPages) {
@@ -73,7 +79,7 @@ const Feed = ({ userId }) => {
       const currentLikes = newLikes.get(log._id) ?? log.likes.length;
 
       if (newLikes.has(log._id)) {
-        newLikes.set(log._id, currentLikes - 1);
+        newLikes.delete(log._id);
       } else {
         newLikes.set(log._id, currentLikes + 1);
       }
@@ -202,7 +208,10 @@ const Feed = ({ userId }) => {
                 </button>
                 <button
                   className="p-2 hover:bg-gray-200 rounded-lg cursor-pointer hover:transition-opacity duration-300 ease-in-out"
-                  onClick={() => handleCommentPreview(log._id)}
+                  onClick={() => {
+                    handleCommentPreview(log._id);
+                    setShowExpenses(null);
+                  }}
                 >
                   Comment
                 </button>
@@ -213,6 +222,7 @@ const Feed = ({ userId }) => {
                         setShowExpenses(
                           showExpenses === log._id ? null : log._id
                         );
+                        setCommentPreview(null);
                       })
                     }
                     className="p-2 hover:bg-gray-200 rounded-lg cursor-pointer hover:transition-opacity duration-300 ease-in-out"

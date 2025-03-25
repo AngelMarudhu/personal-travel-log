@@ -2,9 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// const API_URL = "http://localhost:9000/api/traveler";
+const API_URL = "http://localhost:9000/api/traveler";
 
-const API_URL = "https://personal-travel-log.onrender.com/api/traveler";
+// const API_URL = "https://personal-travel-log.onrender.com/api/traveler";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -28,9 +28,9 @@ export const postSavedLog = createAsyncThunk(
     try {
       console.log(id);
       const response = await api.post("/post-saved-log", { travelLogId: id });
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return thunkAPI.rejectWithValue({
         error: error.response.data,
       });
