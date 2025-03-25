@@ -9,7 +9,8 @@ let io;
 export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL,
+      origin:
+        process.env.FRONTEND_URL || "https://personal-travel-log.onrender.com",
       methods: ["GET", "POST"],
     },
   });
