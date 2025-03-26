@@ -10,7 +10,7 @@ export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
       origin: [
-        "https://personal-travel-log.netlify.app/",
+        "https://personal-travel-log.netlify.app",
         "http://localhost:5173",
       ],
       methods: ["GET", "POST"],
