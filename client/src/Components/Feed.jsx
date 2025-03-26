@@ -18,6 +18,7 @@ const ReportForm = lazy(() => import("./TravelerUserLogComponents/ReportForm"));
 const ShowExpenses = lazy(() =>
   import("./TravelerUserLogComponents/ShowExpenses.jsx")
 );
+const Weather = lazy(() => import("./TravelerUserLogComponents/Weather.jsx"));
 
 const Feed = ({ userId }) => {
   const [feedMenu, setFeedMenu] = useState(null);
@@ -28,6 +29,7 @@ const Feed = ({ userId }) => {
   const dispatch = useDispatch();
   const [toggleReportForm, setToggleReportForm] = useState(null);
   const [showExpenses, setShowExpenses] = useState(null);
+  const [showWeather, setShowWeather] = useState(null);
 
   const { travelLogs, currentPage, totalPages, isLoading } = useSelector(
     (state) => state.travelLog,
@@ -232,6 +234,7 @@ const Feed = ({ userId }) => {
                 <FeedMenu
                   feedLogForSave={log}
                   toggleReportForm={setToggleReportForm}
+                  toggleWeatherDetails={setShowWeather}
                 />
               )}
 
@@ -249,18 +252,30 @@ const Feed = ({ userId }) => {
                 </Suspense>
               )}
 
+              {/* Expenses Section */}
               {showExpenses === log._id && (
                 <Suspense fallback={<div>Loading...</div>}>
                   <ShowExpenses logs={log} />
                 </Suspense>
               )}
 
+              {/* Report Form */}
               {toggleReportForm === log._id && (
                 <Suspense fallback={<div>Loading...</div>}>
                   <ReportForm
                     log={log}
                     toggleReportForm={setToggleReportForm}
                     userId={userId}
+                  />
+                </Suspense>
+              )}
+
+              {/* Weather Section */}
+              {showWeather === log._id && (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Weather
+                    logs={log}
+                    onCloseWeather={() => setShowWeather(null)}
                   />
                 </Suspense>
               )}

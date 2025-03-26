@@ -12,6 +12,7 @@ const FeedMenu = ({
   closeMenu,
   feedLogForSave,
   toggleReportForm,
+  toggleWeatherDetails,
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const dispatch = useDispatch();
@@ -51,7 +52,10 @@ const FeedMenu = ({
             {userMenu ? (
               <button onClick={handleEditLog}>Edit</button>
             ) : (
-              <button>Follow</button>
+              // <button className="cursor-not-allowed text-gray-400">
+              //   Follow *
+              // </button>
+              <></>
             )}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
@@ -64,7 +68,13 @@ const FeedMenu = ({
             )}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
-            {userMenu ? <button>Share</button> : <></>}
+            {userMenu ? (
+              <button>Share</button>
+            ) : (
+              <button onClick={() => toggleWeatherDetails(feedLogForSave._id)}>
+                Weather
+              </button>
+            )}
           </li>
           <li className="text-gray-600 hover:border-b-1 hover:border-gray-400 transition-all duration-300">
             {userMenu ? (

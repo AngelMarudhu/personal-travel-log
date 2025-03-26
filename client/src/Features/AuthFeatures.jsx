@@ -7,7 +7,8 @@ const API_URL = "http://localhost:9000/api/login";
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    Accept: "application/json",
+    Accept: "*/*",
+    "Content-Type": "application/json",
   },
   widthCredentials: true,
 });
