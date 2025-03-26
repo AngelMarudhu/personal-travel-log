@@ -10,7 +10,7 @@ const api = axios.create({
     Accept: "*/*",
     "Content-Type": "application/json",
   },
-  widthCredentials: true,
+  withCredentials: true,
 });
 
 export const registerUser = createAsyncThunk(
@@ -34,7 +34,9 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (userData, thunkAPI) => {
     try {
-      const response = await api.post(`/login`, userData);
+      const response = await api.post(`/login`, userData, {
+        withCredentials: true,
+      });
       // console.log(response);
       return response.data;
     } catch (error) {

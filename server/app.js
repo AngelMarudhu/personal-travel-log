@@ -15,9 +15,7 @@ app.use(
       "https://personal-travel-log.onrender.com",
       "http://localhost:5173",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "authorization"],
   })
 );
 
