@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const API_URL = "http://localhost:9000/api/admin";
-// const API_URL = "https://personal-travel-log.onrender.com/api/admin";
+// const API_URL = "http://localhost:9000/api/admin";
+const API_URL = "https://personal-travel-log.onrender.com/api/admin";
 
 export const getNotificationApi = createApi({
   reducerPath: "getNotificationApi",
