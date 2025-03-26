@@ -183,7 +183,7 @@ const Feed = ({ userId }) => {
                       onClick={() => {
                         setToggleDescription(!toggleDescription);
                       }}
-                      className="text-sm ml-2 border-1 border-gray-200 p-1 rounded-lg text-black cursor-pointer"
+                      className="text-sm ml-2 rounded-lg text-black cursor-pointer"
                     >
                       {toggleDescription ? "ReadLess" : "ReadMore"}
                     </button>

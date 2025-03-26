@@ -79,7 +79,7 @@ const UserLog = () => {
           </div>
 
           <div className="flex flex-col justify-between mt-4 border-2 border-gray-400 rounded-lg p-2">
-            <h1>Your Trip Expenses</h1>
+            {showExpensesDetails ? "" : <h1>Your Trip Expenses</h1>}
             {showExpensesDetails && (
               <div>
                 <ShowExpenses logs={expenseDetailsWithLog} />

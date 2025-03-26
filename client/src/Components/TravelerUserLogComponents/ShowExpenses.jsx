@@ -4,7 +4,7 @@ const ShowExpenses = ({ logs }) => {
   return (
     <section className="w-full p-4">
       <div>
-        <h1 className="w-full text-center border-b-2 border-gray-200 break-words focus:border-b-2 focus:outline-none resize-none">
+        <h1 className="w-full text-center text-xl border-b-2 border-gray-200 break-words focus:border-b-2 focus:outline-none resize-none">
           Total Expenses: {logs?.cost}
         </h1>
         {logs?.expenses !== null && logs?.expenses ? (

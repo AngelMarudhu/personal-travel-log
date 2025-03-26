@@ -12,14 +12,6 @@ const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
 const SearchResult = lazy(() => import("./Components/SearchResults"));
 
 function App() {
-  // useEffect(() => {
-  //   import("web-vitals").then(({ onCLS, onFID, onLCP }) => {
-  //     onCLS(console.log);
-  //     onFID(console.log);
-  //     onLCP(console.log);
-  //   });
-  // }, []);
-
   return (
     <div>
       <BrowserRouter>
