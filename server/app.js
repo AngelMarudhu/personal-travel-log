@@ -11,8 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL || "https://personal-travel-log.onrender.com",
+    origin: "https://personal-travel-log.onrender.com",
   })
 );
 

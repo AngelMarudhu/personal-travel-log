@@ -49,10 +49,7 @@ const Feed = ({ userId }) => {
       window.alert("saved successfully");
       dispatch(resetSavedLog());
     }
-    if (socketError) {
-      window.alert(socketError);
-    }
-  }, [error, isSaved, socketError]);
+  }, [error, isSaved]);
 
   const handleLoadMore = () => {
     if (currentPage <= totalPages) {
