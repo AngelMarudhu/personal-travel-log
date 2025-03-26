@@ -1,21 +1,21 @@
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
 
-// const socket = io("http://localhost:9000", {
-//   reconnectionAttempts: 99999,
-//   timeout: 1000000,
-//   reconnection: true,
-//   reconnectionDelay: 1000, //// 1000 ms is equal to 1 second
-//   reconnectionDelayMax: 5000,
-// });
-
-const socket = io("https://personal-travel-log.onrender.com", {
+const socket = io("http://localhost:9000", {
   reconnectionAttempts: 99999,
   timeout: 1000000,
   reconnection: true,
   reconnectionDelay: 1000, //// 1000 ms is equal to 1 second
   reconnectionDelayMax: 5000,
 });
+
+// const socket = io("https://personal-travel-log.onrender.com", {
+//   reconnectionAttempts: 99999,
+//   timeout: 1000000,
+//   reconnection: true,
+//   reconnectionDelay: 1000, //// 1000 ms is equal to 1 second
+//   reconnectionDelayMax: 5000,
+// });
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(false);

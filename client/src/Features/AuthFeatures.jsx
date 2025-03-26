@@ -1,21 +1,24 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const API_URL = "http://localhost:9000/api/login";
-const API_URL = "https://personal-travel-log.onrender.com/api/login";
+const API_URL = "http://localhost:9000/api/login";
+// const API_URL = "https://personal-travel-log.onrender.com/api/login";
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     Accept: "application/json",
   },
+  widthCredentials: true,
 });
 
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, thunkAPI) => {
     try {
-      const response = await api.post(`/register`, userData);
+      const response = await api.post(`/register`, userData, {
+        withCredentials: true,
+      });
       //   console.log(response.data);
       return response.data;
     } catch (error) {
